@@ -1,10 +1,8 @@
-## Projeto base para o evento Bootcamp Imersão AWS que irei realizar.
+# Scripts AWS
 
-### Período do evento: 31/03 a 06/04/2025 (Online e ao Vivo às 20h)
+This repository contains the scripts to help the development of the app.
 
-[>> Página de Inscrição do evento](https://org.imersaoaws.com.br/github/readme)
+## Instructions
 
-#### Para rodar as migrations no container ####
-```
-docker compose exec server bash -c 'npx sequelize db:migrate'
-```
+The documentation has an section about the scripts.
+[Documentation](https://github.com/Akash-Repositories/documentation#readme)

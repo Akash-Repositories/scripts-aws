@@ -1,25 +1,29 @@
-FROM public.ecr.aws/docker/library/node:22-slim
-RUN npm install -g npm@11 --loglevel=error
+FROM public.ecr.aws/docker/library/node:18-slim
 
-#Instalando o curl
-RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+# Install global dependencies
+RUN npm install -g npm@latest expo-cli eas-cli --loglevel=error
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    git \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /usr/src/app
 
+# Copy package files
 COPY package*.json ./
 
+# Install dependencies
 RUN npm install --loglevel=error
 
+# Copy app source
 COPY . .
 
-RUN NODE_OPTIONS=--openssl-legacy-provider REACT_APP_API_URL=http://34.239.240.133 SKIP_PREFLIGHT_CHECK=true npm run build --prefix client
+# Expose Expo dev server ports
+EXPOSE 19000
+EXPOSE 19001
+EXPOSE 19002
 
-RUN mv client/build build
-
-RUN rm  -rf client/*
-
-RUN mv build client/
-
-EXPOSE 8080
-
-CMD [ "npm", "start" ]
+# Default command for development
+CMD ["npx", "expo", "start", "--dev-client"]

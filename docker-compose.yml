@@ -1,39 +1,23 @@
 services:
-  server:
+  expo-dev:
     build: .
-    container_name: bia
+    container_name: expo-dev
     ports:
-      - 3001:8080
-    links:
-      - database
+      - 19000:19000
+      - 19001:19001
+      - 19002:19002
     environment:
-      DB_USER: postgres
-      DB_PWD: postgres
-      DB_HOST: database
-      DB_PORT: 5432
-      ## NAO PRECISA NO BOOTCAMP DAQUI PRA BAIXO ##
-      # DB_SECRET_NAME: 
-      # DB_REGION: 
-      # AWS_ACCESS_KEY_ID: 
-      # AWS_SECRET_ACCESS_KEY:
-      # DEBUG_SECRET: 
-      # IS_LOCAL: true 
-    # healthcheck:
-    #   test: ["CMD", "curl", "-f", "http://localhost:8080/api/versao"]
-    #   interval: 10s
-    #   timeout: 5s
-    #   retries: 3
-    #   start_period: 5s     
-  database:
-    image: postgres:16.1
-    container_name: database
-    environment:
-      - "POSTGRES_USER=postgres"
-      - "POSTGRES_PASSWORD=postgres"
-      - "POSTGRES_DB=bia"
-    ports:
-      - 5433:5432
+      NODE_ENV: development
+      EXPO_DEVTOOLS_LISTEN_ADDRESS: 0.0.0.0
+      # Zeego Cloud configuration
+      ZEEGO_API_KEY: ${ZEEGO_API_KEY}
+      # AWS configuration
+      AWS_REGION: ${AWS_REGION}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      # Stripe configuration
+      STRIPE_PUBLISHABLE_KEY: ${STRIPE_PUBLISHABLE_KEY}
     volumes:
-      - db:/var/lib/postgresql/data
-volumes:
-  db:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    command: npx expo start --dev-client

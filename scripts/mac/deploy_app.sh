@@ -1,8 +1,9 @@
 #!/bin/bash
 
 # Set variables
-AWS_REGION=${AWS_REGION:-"us-east-1"}
-AWS_PROFILE=${AWS_PROFILE:-"default"}
+if [ -z "$AWS_PROFILE" ]; then
+    AWS_PROFILE="default"
+fi
 
 # Function to display usage
 function display_usage {
@@ -15,6 +16,10 @@ function display_usage {
 }
 
 # Parse command line arguments
+BUILD=false
+DEPLOY=false
+PUBLISH=false
+
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --build)
@@ -44,23 +49,18 @@ done
 # Build the application
 if [[ "$BUILD" == true ]]; then
   echo "Building application..."
-  amplify build
   npx eas-cli build --platform all --profile production --non-interactive
 fi
 
 # Deploy to AWS
 if [[ "$DEPLOY" == true ]]; then
-  echo "Deploying to AWS using Amplify..."
-  amplify push --yes
+  echo "Deploying to AWS..."
+  aws s3 sync ./build s3://your-bucket-name/ --profile $AWS_PROFILE
   
-  # Check if environment exists and create if needed
-  if ! amplify env get --name prod > /dev/null 2>&1; then
-    echo "Creating production environment..."
-    amplify env add --name prod --yes
+  # If using CloudFront, invalidate cache
+  if [[ -n "$CLOUDFRONT_DISTRIBUTION_ID" ]]; then
+    aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths "/*" --profile $AWS_PROFILE
   fi
-  
-  # Deploy to production environment
-  amplify publish --yes
 fi
 
 # Publish to Expo

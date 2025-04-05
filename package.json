@@ -10,8 +10,12 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject",
-    "build": "eas build --platform all",
-    "publish": "eas update"
+    "build": "amplify build && eas build --platform all",
+    "publish": "amplify push && eas update",
+    "amplify-init": "amplify init",
+    "amplify-push": "amplify push",
+    "amplify-pull": "amplify pull",
+    "amplify-status": "amplify status"
   },
   "repository": {
     "type": "git",
@@ -24,6 +28,9 @@
   },
   "homepage": "https://github.com/Akash-Repositories/app#readme",
   "dependencies": {
+    "@aws-amplify/cli": "^12.10.1",
+    "@aws-amplify/core": "^6.0.12",
+    "aws-amplify": "^6.0.12",
     "@aws-sdk/client-secrets-manager": "^3.583.0",
     "@aws-sdk/client-sts": "^3.583.0",
     "@aws-sdk/credential-providers": "^3.583.0",
